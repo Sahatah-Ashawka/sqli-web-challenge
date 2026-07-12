@@ -8,6 +8,8 @@ from flask import Flask, jsonify, render_template, request
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "challenge.db"
 MAX_ROWS = 30
+DEFAULT_FLAG = "UITCTF{local_flag_placeholder}"
+CHALLENGE_FLAG = os.environ.get("FLAG", DEFAULT_FLAG)
 
 app = Flask(__name__)
 
@@ -49,9 +51,11 @@ def init_db():
                 (2, 'maintenance-log', 'public'),
                 (3, 'archive-map', 'internal');
 
-            INSERT INTO archive_7d2e (id, note, flag_9a61) VALUES
-                (1, 'final record', 'UITCTF{fake_flag}}');
             """
+        )
+        conn.execute(
+            "INSERT INTO archive_7d2e (id, note, flag_9a61) VALUES (?, ?, ?)",
+            (1, "final record", CHALLENGE_FLAG),
         )
         conn.commit()
     finally:

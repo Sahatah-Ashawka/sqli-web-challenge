@@ -1,5 +1,7 @@
 import json
+import os
 
+os.environ.setdefault("FLAG", "CTF{newline_case_filter_bypass}")
 import app
 
 
@@ -67,8 +69,9 @@ def main():
             f'"{keyword}" keyword is blocked.',
         )
 
-    expect_ok(client, "select\nFLAG_9a61\nfrom\narchive_7d2e", "CTF{newline_case_filter_bypass}")
-    expect_ok(client, "select\nFLAG_9A61\nfrom\narchive_7d2e", "CTF{newline_case_filter_bypass}")
+    expected_flag = os.environ["FLAG"]
+    expect_ok(client, "select\nFLAG_9a61\nfrom\narchive_7d2e", expected_flag)
+    expect_ok(client, "select\nFLAG_9A61\nfrom\narchive_7d2e", expected_flag)
 
     page_result = client.post(
         "/",
@@ -77,7 +80,7 @@ def main():
     )
     page_result_html = page_result.get_data(as_text=True)
     assert page_result.status_code == 200
-    assert "CTF{newline_case_filter_bypass}" in page_result_html
+    assert expected_flag in page_result_html
     assert "<script" not in page_result_html.lower()
 
     raw_encoded = client.post(
