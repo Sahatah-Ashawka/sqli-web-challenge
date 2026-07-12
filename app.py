@@ -100,6 +100,7 @@ def build_statement(query):
         ("/*", "Comment markers are blocked."),
         ("*/", "Comment markers are blocked."),
         ("#", "Comment markers are blocked."),
+        ("*", "* is blocked."),
         (";", "Multiple statements are blocked."),
         ("\t", "Tabs are blocked."),
         (" ", "Spaces are blocked."),
@@ -125,7 +126,12 @@ def build_statement(query):
         return None, "Only read statements are allowed."
 
     collapsed = " ".join(lowered.split())
-    if collapsed in {"select sql from sqlite_schema", "select sql from sqlite_master"}:
+    blocked_structures = {
+        "pragma database_list",
+        "select sql from sqlite_schema",
+        "select sql from sqlite_master",
+    }
+    if collapsed in blocked_structures:
         return None, "Database structure is blocked."
 
     blocked_words = ("insert", "update", "delete", "drop", "alter", "attach", "detach", "vacuum", "replace")

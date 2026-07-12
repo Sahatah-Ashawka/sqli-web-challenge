@@ -43,6 +43,9 @@ def main():
     expect_ok(client, "select\nsqlite_version()", "sqlite_version()")
     expect_ok(client, "select\nname\nfrom\nsqlite_schema\nwhere\ntype='table'", "archive_7d2e")
     expect_ok(client, "pragma\ntable_info(archive_7d2e)", "flag_9a61")
+    expect_blocked(client, "pragma\ndatabase_list", "Database structure is blocked.")
+    expect_blocked(client, "PRAGMA\ndatabase_list", "Database structure is blocked.")
+    expect_blocked(client, "select\n*\nfrom\narchive_7d2e", "* is blocked.")
     expect_blocked(client, "select\nsql\nfrom\nsqlite_master", "Database structure is blocked.")
     expect_blocked(client, "SELECT\nsql\nFROM\nsqlite_schema", "Database structure is blocked.")
 
