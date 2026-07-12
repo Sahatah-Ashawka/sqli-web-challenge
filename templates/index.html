@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smash this !!</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell">
+    <form class="panel" method="post" enctype="multipart/form-data" aria-label="Comment Box">
+      <textarea id="query" name="query" spellcheck="false" autocomplete="off" placeholder="Sel...">{{ query or "" }}</textarea>
+      <button id="execute" type="submit">Execute</button>
+    </form>
+
+    {% if status %}
+    <section class="output" aria-live="polite">
+      <div id="status">{{ status }}</div>
+      {% if statement %}
+      <pre id="statement">{{ statement }}</pre>
+      {% endif %}
+      <div id="result">
+        {% if error %}
+        {{ error }}
+        {% elif result and result.columns %}
+        <table>
+          <thead>
+            <tr>
+              {% for column in result.columns %}
+              <th>{{ column }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in result.rows %}
+            <tr>
+              {% for cell in row %}
+              <td>{{ "NULL" if cell is none else cell }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% if result.truncated %}
+        <p class="muted">More rows hidden.</p>
+        {% endif %}
+        {% else %}
+        Done.
+        {% endif %}
+      </div>
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>
