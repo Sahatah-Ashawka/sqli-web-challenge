@@ -6,7 +6,7 @@ from flask import Flask, jsonify, render_template, request
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "challenge.db"
+DB_PATH = Path("/tmp/challenge.db") if os.environ.get("VERCEL") else BASE_DIR / "challenge.db"
 MAX_ROWS = 30
 DEFAULT_FLAG = "UITCTF{local_flag_placeholder}"
 CHALLENGE_FLAG = os.environ.get("FLAG", DEFAULT_FLAG)
